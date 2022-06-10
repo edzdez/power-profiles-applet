@@ -99,7 +99,7 @@ fn create_menu() -> gtk::Menu {
             let label = button.label().unwrap().to_string();
 
             if label == curr_profile && !button.is_active() {
-                info!("detected external power profile change");
+                info!("detected external power profile change: {}", curr_profile);
                 button.activate();
             }
         }
@@ -118,6 +118,8 @@ fn main() {
     indicator.set_status(AppIndicatorStatus::Active);
 
     let mut menu = create_menu();
+
+    // TODO: Change icon depending on battery percentage
 
     indicator.set_menu(&mut menu);
     menu.show_all();
