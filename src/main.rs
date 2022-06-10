@@ -3,6 +3,8 @@ use std::{process::Command, time::Duration};
 use gtk::prelude::*;
 use libappindicator::{AppIndicator, AppIndicatorStatus};
 
+use log::info;
+
 fn get_current_power_profile() -> String {
     let output = Command::new("powerprofilesctl")
         .arg("get")
@@ -68,7 +70,7 @@ fn create_menu() -> gtk::Menu {
 
             let label = b.label().unwrap().to_string();
 
-            println!("setting power profile to {}", &label);
+            info!("setting power profile to {}", &label);
             set_power_profile(&label);
         });
 
@@ -97,7 +99,7 @@ fn create_menu() -> gtk::Menu {
             let label = button.label().unwrap().to_string();
 
             if label == curr_profile && !button.is_active() {
-                println!("detected external power profile change");
+                info!("detected external power profile change");
                 button.activate();
             }
         }
@@ -109,6 +111,7 @@ fn create_menu() -> gtk::Menu {
 }
 
 fn main() {
+    env_logger::init();
     gtk::init().expect("Failed to init gtk");
 
     let mut indicator = AppIndicator::new("Power Profiles Indicator", "battery-good");
