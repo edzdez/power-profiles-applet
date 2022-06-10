@@ -59,15 +59,26 @@ fn create_menu() -> gtk::Menu {
     let mut group = None;
     for profile in profiles {
         let profile_button = gtk::RadioMenuItem::builder().label(&profile).build();
+        // when activated, set the power profile to this profile
         profile_button.connect_activate(|b| {
-            dbg!("setting power profile to {}", b.label().unwrap());
-            set_power_profile(&b.label().unwrap());
+            // don't act if being deactivated
+            if !b.is_active() {
+                return;
+            }
+
+            let label = b.label().unwrap().to_string();
+
+            println!("setting power profile to {}", &label);
+            set_power_profile(&label);
         });
 
+        // add this button to the group
         match group {
             Some(ref group) => profile_button.join_group(Some(group)),
             None => group = Some(profile_button.clone()),
         }
+
+        // activate the button for the currently active power profile
         if profile == current_profile {
             profile_button.activate();
         }
