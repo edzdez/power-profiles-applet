@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{process::Command, time::Duration};
 
 use gtk::prelude::*;
 use libappindicator::{AppIndicator, AppIndicatorStatus};
@@ -84,6 +84,26 @@ fn create_menu() -> gtk::Menu {
         }
         menu.append(&profile_button);
     }
+
+    // update the selected profile every second
+    let group = group
+        .expect("There are no power profiles detected!")
+        .group();
+    gtk::glib::timeout_add_local(Duration::from_secs(1), move || {
+        let curr_profile = get_current_power_profile();
+
+        // if power profiles are changed externally, activate the correct button
+        for button in &group {
+            let label = button.label().unwrap().to_string();
+
+            if label == curr_profile && !button.is_active() {
+                println!("detected external power profile change");
+                button.activate();
+            }
+        }
+
+        Continue(true)
+    });
 
     menu
 }
