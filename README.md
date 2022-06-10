@@ -2,7 +2,7 @@
 
 ![](./screenshots/demo.png)
 
-power-profiles-applet is a simple gtk-based systray applet that lets
+power-profiles-applet is a simple, gtk-based systray applet that lets
 you check and change your current power profile (using [power-profiles-daemon](https://gitlab.freedesktop.org/hadess/power-profiles-daemon))
 
 ## Build:

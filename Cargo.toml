@@ -1,9 +1,18 @@
 [package]
 name = "power-profiles-applet"
+authors = ["Ethan Zhang <ezsland05@gmail.com>"]
+description = "A simple, gtk-based systray applet to help manage your power profiles."
+homepage = "https://github.com/edzdez/power-profiles-applet"
+repository = "https://github.com/edzdez/power-profiles-applet"
 version = "0.1.0"
 edition = "2021"
-
+readme = "README.md"
+license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "power-profiles-applet"
+src = "src/main.rs"
 
 [dependencies]
 gtk = "0.15"
