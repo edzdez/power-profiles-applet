@@ -1,4 +1,4 @@
-use std::{process::Command, time::Duration};
+use std::process::Command;
 
 use gtk::prelude::*;
 use libappindicator::{AppIndicator, AppIndicatorStatus};
@@ -44,8 +44,9 @@ fn set_power_profile(label: &str) {
 fn create_menu() -> gtk::Menu {
     let menu = gtk::Menu::builder().halign(gtk::Align::Start).build();
 
+    let current_profile = get_current_power_profile();
     let current_profile_label = gtk::MenuItem::builder()
-        .label("Power Profiles: ")
+        .label(&format!("Current Profile: {}", current_profile))
         .halign(gtk::Align::Start)
         .sensitive(false)
         .build();
@@ -55,7 +56,6 @@ fn create_menu() -> gtk::Menu {
     menu.append(&current_profile_label);
     menu.append(&divider);
 
-    let current_profile = get_current_power_profile();
     let profiles = get_all_power_profiles();
 
     let mut group = None;
@@ -91,7 +91,7 @@ fn create_menu() -> gtk::Menu {
     let group = group
         .expect("There are no power profiles detected!")
         .group();
-    gtk::glib::timeout_add_local(Duration::from_secs(1), move || {
+    gtk::glib::timeout_add_seconds_local(1, move || {
         let curr_profile = get_current_power_profile();
 
         // if power profiles are changed externally, activate the correct button
@@ -99,9 +99,16 @@ fn create_menu() -> gtk::Menu {
             let label = button.label().unwrap().to_string();
 
             if label == curr_profile && !button.is_active() {
-                info!("detected external power profile change: {}", curr_profile);
+                println!("detected external power profile change: {}", curr_profile);
                 button.activate();
             }
+        }
+
+        // and set the Current Profile label
+        if current_profile_label.label().unwrap() != format!("Current Profile: {}", curr_profile)
+        {
+            println!("set current profile label to {}", &curr_profile);
+            current_profile_label.set_label(&format!("Current Profile: {}", curr_profile));
         }
 
         Continue(true)
